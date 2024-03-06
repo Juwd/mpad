@@ -1,64 +1,67 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, SlideToggle, initializeStores,Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
+	import Navigation from '$lib/navigation/Navigation.svelte';
+	initializeStores();
+	const drawerStore = getDrawerStore();
+	let LMPA: boolean = false;
+	let NIPAS: boolean = true;
 
-	// Highlight JS
-	import hljs from 'highlight.js/lib/core';
-	import 'highlight.js/styles/github-dark.css';
-	import { storeHighlightJs } from '@skeletonlabs/skeleton';
-	import xml from 'highlight.js/lib/languages/xml'; // for HTML
-	import css from 'highlight.js/lib/languages/css';
-	import javascript from 'highlight.js/lib/languages/javascript';
-	import typescript from 'highlight.js/lib/languages/typescript';
+	function drawerOpen(): void {
+	drawerStore.open({});
+	}
 
-	hljs.registerLanguage('xml', xml); // for HTML
-	hljs.registerLanguage('css', css);
-	hljs.registerLanguage('javascript', javascript);
-	hljs.registerLanguage('typescript', typescript);
-	storeHighlightJs.set(hljs);
 
-	// Floating UI for Popups
-	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 </script>
 
 <!-- App Shell -->
-<AppShell>
+<Drawer>
+	<nav class="list-nav p-4">
+		<Navigation />
+	</nav>
+</Drawer>
+<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">	
 	<svelte:fragment slot="header">
-		<!-- App Bar -->
-		<AppBar>
-			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Skeleton</strong>
-			</svelte:fragment>
-			<svelte:fragment slot="trail">
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Twitter
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
-			</svelte:fragment>
+		<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
+				<svelte:fragment slot="lead">
+					<div class="flex items-center">
+						<button class="lg:hidden btn btn-sm mr-4" on:click={drawerOpen}>
+							<span>
+								<svg viewBox="0 0 100 80" class="fill-token w-4 h-4">
+									<rect width="100" height="20" />
+									<rect y="30" width="100" height="20" />
+									<rect y="60" width="100" height="20" />
+								</svg>
+							</span>
+						</button>
+						<strong class="text-xl uppercase">MSN</strong>
+					</div>
+				</svelte:fragment>
+			<h1 class="h1">MPA Database</h1>
+			<svelte:fragment slot="trail">(actions)</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
+
+
+	<svelte:fragment slot="sidebarLeft">
+		<!-- Insert the list: -->
+		<nav class="list-nav p-4">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/about">About</a></li>
+				<li><a href="/mpas">MPA's List</a></li>
+			</ul>
+		</nav>
+		<!-- --- -->
+	</svelte:fragment>
+
 	<!-- Page Route Content -->
 	<slot />
+	<svelte:fragment slot="pageFooter">
+		<svelter:fragment slot="areas" class="flex pb-4 justify-center">
+			<SlideToggle name="slide" bind:checked={LMPA} > LMPA {LMPA ? 'show' : 'hide'} </SlideToggle>
+			<SlideToggle name="slide" class="ml-2" bind:checked={NIPAS}>NIPAS {NIPAS ? 'show': 'hide'} </SlideToggle>	
+		</svelter:fragment>
+
+	</svelte:fragment>
 </AppShell>
